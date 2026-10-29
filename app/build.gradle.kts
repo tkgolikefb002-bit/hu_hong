@@ -40,7 +40,6 @@ android {
         compose = true
     }
     composeOptions {
-        // Tương thích chuẩn với Kotlin 1.9.24
         kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
