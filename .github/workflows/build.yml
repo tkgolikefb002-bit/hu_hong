@@ -24,7 +24,7 @@ jobs:
         gradle-version: '8.4'
 
     - name: Build Debug APK with Global Gradle
-      run: gradle assembleDebug --stacktrace --info
+      run: gradle assembleDebug --console=plain --warning-mode=all
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
