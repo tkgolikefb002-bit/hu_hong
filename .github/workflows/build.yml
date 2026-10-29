@@ -23,13 +23,12 @@ jobs:
       with:
         gradle-version: '8.4'
 
-    # Khởi tạo biến môi trường SDK trực tiếp mà không cần dùng action trung gian bị lỗi
     - name: Build Debug APK
       env:
         ANDROID_HOME: /usr/local/lib/android/sdk
       run: |
         echo "sdk.dir=$ANDROID_HOME" > local.properties
-        gradle assembleDebug --stacktrace
+        gradle assembleDebug --stacktrace --info --warning-mode all
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
