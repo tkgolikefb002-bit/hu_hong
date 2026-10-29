@@ -13,7 +13,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v4
+      uses: setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
@@ -23,8 +23,9 @@ jobs:
       with:
         gradle-version: '8.4'
 
+    # Sử dụng lệnh build chuẩn kèm theo cờ quét lỗi chi tiết
     - name: Build Debug APK with Global Gradle
-      run: gradle assembleDebug --stacktrace
+      run: gradle assembleDebug --warning-mode all --stacktrace
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
