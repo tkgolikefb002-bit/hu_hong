@@ -21,8 +21,12 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
 
-    - name: Build Debug APK
-      run: gradle assembleDebug --console=plain --no-daemon
+    # Tự sinh ra gradle wrapper chuẩn ngay trên runner trước khi build
+    - name: Generate Wrapper
+      run: gradle wrapper --gradle-version 8.4
+
+    - name: Build Debug APK with Wrapper
+      run: ./gradlew assembleDebug --stacktrace --info || ./gradlew assembleDebug --debug
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
