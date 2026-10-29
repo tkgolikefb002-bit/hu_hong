@@ -20,11 +20,9 @@ jobs:
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
-      with:
-        gradle-version: '8.4'
 
-    - name: Build Debug APK with Global Gradle
-      run: gradle assembleDebug --console=plain --warning-mode=all
+    - name: Build Debug APK
+      run: gradle assembleDebug --console=plain --no-daemon
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
