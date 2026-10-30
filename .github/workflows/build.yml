@@ -23,14 +23,18 @@ jobs:
       with:
         gradle-version: '8.4'
 
-    - name: Build Debug APK Successfully
+    - name: Build Debug APK with Optimized Memory
       env:
         ANDROID_HOME: /usr/local/lib/android/sdk
+        ORG_GRADLE_PROJECT_jvmargs: "-Xmx3g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
       run: |
         echo "sdk.dir=$ANDROID_HOME" > local.properties
         mkdir -p $ANDROID_HOME/licenses
         echo -e "\n8933bac163af429817f4bb2ce91ad5d1df216bfa" > $ANDROID_HOME/licenses/android-sdk-license
-        gradle assembleDebug
+        
+        # Chạy clean riêng và assembleDebug riêng để phân tách rõ log
+        gradle clean
+        gradle assembleDebug --stacktrace --warning-mode all
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
