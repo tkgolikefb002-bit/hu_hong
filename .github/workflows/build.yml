@@ -23,7 +23,7 @@ jobs:
       with:
         gradle-version: '8.4'
 
-    - name: Build Debug APK with Wrapper and Memory
+    - name: Build Debug APK Cleanly
       env:
         ANDROID_HOME: /usr/local/lib/android/sdk
       run: |
@@ -31,15 +31,11 @@ jobs:
         mkdir -p $ANDROID_HOME/licenses
         echo -e "\n8933bac163af429817f4bb2ce91ad5d1df216bfa" > $ANDROID_HOME/licenses/android-sdk-license
         
-        # Tạo tệp gradle.properties để cấp phát 4GB Heap trực tiếp cho Gradle daemon
-        echo "org.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8" >> gradle.properties
+        # Cấp phát trực tiếp tham số JVM Heap tối đa vào biến môi trường chạy Gradle
+        export GRADLE_OPTS="-Xmx4g -Dfile.encoding=UTF-8"
         
-        # Nếu dự án chưa có gradlew, hệ thống sẽ tự sinh ra, sau đó cấp quyền thực thi và build
-        gradle wrapper --gradle-version 8.4 || true
-        chmod +x gradlew || true
-        
-        # Thực hiện build thông qua gradlew với cờ hiển thị lỗi chi tiết
-        ./gradlew assembleDebug --stacktrace || gradle assembleDebug --stacktrace
+        # Thực hiện build trực tiếp ứng dụng với cờ debug chi tiết
+        gradle :app:assembleDebug --stacktrace
         
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
