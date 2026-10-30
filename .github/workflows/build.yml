@@ -32,7 +32,7 @@ jobs:
         mkdir -p $ANDROID_HOME/licenses
         echo -e "\n8933bac163af429817f4bb2ce91ad5d1df216bfa" > $ANDROID_HOME/licenses/android-sdk-license
         
-        # Tìm thư mục chứa build.gradle.kts của ứng dụng (nếu nằm trong thư mục con)
+        # Tìm thư mục chứa build.gradle.kts của ứng dụng
         PROJECT_DIR=$(dirname $(find . -maxdepth 3 -name "build.gradle.kts" | grep -v "^\./build.gradle.kts$" | head -n 1))
         if [ "$PROJECT_DIR" != "." ] && [ -n "$PROJECT_DIR" ]; then
           echo "Found project directory at: $PROJECT_DIR"
@@ -40,8 +40,8 @@ jobs:
           echo "sdk.dir=$ANDROID_HOME" > local.properties
         fi
         
-        # Thực hiện build trực tiếp
-        gradle assembleDebug --stacktrace --info
+        # Chạy build với console plain để ép hiển thị nguyên nhân lỗi tường minh nhất
+        gradle assembleDebug --console=plain --warning-mode none
         
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
