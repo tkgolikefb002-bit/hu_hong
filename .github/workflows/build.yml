@@ -1,7 +1,9 @@
-name: Build Android APK
+name: Android CI
 
 on:
   push:
+    branches: [ "main" ]
+  pull_request:
     branches: [ "main" ]
 
 jobs:
@@ -9,34 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - name: Set up JDK 17
+    - name: set up JDK 17
       uses: actions/setup-java@v4
       with:
-        distribution: 'temurin'
         java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
       with:
-        gradle-version: '8.4'
+        gradle-version: '8.5'
 
-    - name: Build Debug APK with Global Gradle
-      env:
-        ANDROID_HOME: /usr/local/lib/android/sdk
-        GRADLE_OPTS: "-Xmx4g -Dfile.encoding=UTF-8"
-      run: |
-        echo "sdk.dir=$ANDROID_HOME" > local.properties
-        mkdir -p $ANDROID_HOME/licenses
-        echo -e "\n8933bac163af429817f4bb2ce91ad5d1df216bfa" > $ANDROID_HOME/licenses/android-sdk-license
-        
-        # Sử dụng lệnh gradle toàn cục thay vì gọi ./gradlew để tránh lỗi thiếu file
-        gradle assembleDebug --stacktrace --info
-        
-    - name: Upload APK artifact
+    # Cấp quyền thực thi cho gradlew để tránh lỗi từ chối quyền trên Linux
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build with Gradle
+      run: ./gradlew assembleDebug --stacktrace --console=plain
+
+    # Thêm bước này để lưu và cho phép tải file APK sau khi build thành công
+    - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
-        path: '**/build/outputs/apk/debug/'
+        path: app/build/outputs/apk/debug/app-debug.apk
