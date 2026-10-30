@@ -23,7 +23,7 @@ jobs:
       with:
         gradle-version: '8.4'
 
-    - name: Locate Project and Build Debug APK
+    - name: Build Debug APK with Global Gradle
       env:
         ANDROID_HOME: /usr/local/lib/android/sdk
         GRADLE_OPTS: "-Xmx4g -Dfile.encoding=UTF-8"
@@ -32,18 +32,8 @@ jobs:
         mkdir -p $ANDROID_HOME/licenses
         echo -e "\n8933bac163af429817f4bb2ce91ad5d1df216bfa" > $ANDROID_HOME/licenses/android-sdk-license
         
-        # Tìm xem build.gradle hoặc settings.gradle đang nằm ở thư mục nào
-        echo "Searching for gradle files:"
-        find . -name "settings.gradle*" -o -name "build.gradle*"
-        
-        # Nếu có gradlew thì dùng, nếu không thì tự tạo wrapper chuẩn
-        if [ ! -f "gradlew" ]; then
-          gradle wrapper --gradle-version 8.4
-        fi
-        chmod +x gradlew
-        
-        # Chạy build và xuất lỗi chi tiết đầy đủ
-        ./gradlew assembleDebug --stacktrace --info
+        # Sử dụng lệnh gradle toàn cục thay vì gọi ./gradlew để tránh lỗi thiếu file
+        gradle assembleDebug --stacktrace --info
         
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
