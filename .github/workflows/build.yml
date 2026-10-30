@@ -23,20 +23,22 @@ jobs:
       with:
         gradle-version: '8.4'
 
-    - name: Build Debug APK Cleanly
+    - name: Build Debug APK with Wrapper
       env:
         ANDROID_HOME: /usr/local/lib/android/sdk
+        GRADLE_OPTS: "-Xmx4g -Dfile.encoding=UTF-8"
       run: |
         echo "sdk.dir=$ANDROID_HOME" > local.properties
         mkdir -p $ANDROID_HOME/licenses
         echo -e "\n8933bac163af429817f4bb2ce91ad5d1df216bfa" > $ANDROID_HOME/licenses/android-sdk-license
         
-        # Cấp phát trực tiếp tham số JVM Heap tối đa vào biến môi trường chạy Gradle
-        export GRADLE_OPTS="-Xmx4g -Dfile.encoding=UTF-8"
+        # Đảm bảo sinh ra gradlew wrapper tương thích và phân quyền chạy
+        gradle wrapper --gradle-version 8.4
+        chmod +x gradlew
         
-        # Thực hiện build trực tiếp ứng dụng với cờ debug chi tiết
-        gradle :app:assembleDebug --stacktrace
-        
+        # Build qua gradlew với cờ kiểm tra lỗi đầy đủ
+        ./gradlew assembleDebug --stacktrace --info
+
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
