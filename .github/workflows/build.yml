@@ -40,8 +40,8 @@ jobs:
           echo "sdk.dir=$ANDROID_HOME" > local.properties
         fi
         
-        # Chạy build với console plain để ép hiển thị nguyên nhân lỗi tường minh nhất
-        gradle assembleDebug --console=plain --warning-mode none
+        # Thực hiện build và làm mới toàn bộ dependency để giải quyết triệt để lỗi Compose BOM
+        gradle clean assembleDebug --refresh-dependencies --console=plain
         
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
