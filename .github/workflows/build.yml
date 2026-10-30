@@ -20,8 +20,10 @@ jobs:
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.4'
 
-    - name: Generate Wrapper and Build Debug APK
+    - name: Build Debug APK Directly
       env:
         ANDROID_HOME: /usr/local/lib/android/sdk
       run: |
@@ -29,13 +31,9 @@ jobs:
         mkdir -p $ANDROID_HOME/licenses
         echo -e "\n8933bac163af429817f4bb2ce91ad5d1df216bfa" > $ANDROID_HOME/licenses/android-sdk-license
         
-        # Sinh file gradlew chuẩn và cấp quyền thực thi
-        gradle wrapper --gradle-version 8.4
-        chmod +x gradlew
-        
-        # Build trực tiếp bằng gradlew sinh ra để nạp đầy đủ các task Android
-        ./gradlew assembleDebug --stacktrace
-        
+        # Gọi trực tiếp lệnh gradle toàn cục với cờ `--continue` để ép chạy thông suốt
+        gradle assembleDebug --continue --stacktrace
+
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
