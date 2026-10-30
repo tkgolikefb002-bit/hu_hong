@@ -20,24 +20,17 @@ jobs:
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
-      with:
-        gradle-version: '8.4'
 
-    - name: Build Debug APK with Wrapper Generation
+    - name: Build Debug APK with Standard Gradle Action
       env:
         ANDROID_HOME: /usr/local/lib/android/sdk
-        ORG_GRADLE_PROJECT_jvmargs: "-Xmx3g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
       run: |
         echo "sdk.dir=$ANDROID_HOME" > local.properties
         mkdir -p $ANDROID_HOME/licenses
         echo -e "\n8933bac163af429817f4bb2ce91ad5d1df216bfa" > $ANDROID_HOME/licenses/android-sdk-license
         
-        # Tự động sinh gradle wrapper chuẩn cho dự án ngay trên runner
-        gradle wrapper --gradle-version 8.4
-        chmod +x gradlew
-        
-        # Chạy build trực tiếp qua gradlew vừa sinh ra
-        ./gradlew assembleDebug --stacktrace --warning-mode all
+        # Sử dụng gradle trực tiếp với cờ build debug chuẩn
+        gradle assembleDebug --stacktrace
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
