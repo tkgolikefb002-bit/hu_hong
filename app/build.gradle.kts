@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.hu.hong.myautotool"
+    namespace = "com.example.myautotool"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.hu.hong.myautotool"
+        applicationId = "com.example.myautotool"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
